@@ -13,7 +13,7 @@ def send(soc: socket.socket, data):
 
 def recive(soc: socket.socket):
     data = soc.recv(RECV_SIZE)
-    while data[-1] == 35:
+    while data[-1] != 35:
         data += soc.recv(RECV_SIZE)
 
     return data[:-1]
