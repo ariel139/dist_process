@@ -1,5 +1,6 @@
 import socket
 from hashlib import md5
+from comm import send, recive
 # TO_FIND = 'EC9C0F7EDCC18A98B1F31853B1813301'
 TO_FIND = 'd3d9446802a44259755d38e6d163e820'.upper()
 
@@ -15,20 +16,20 @@ def procces_info(shot, ration):
             return True, to_hash
     return False, -1
 
-def communicate(socket):
-    data = socket.recv(1024)
+def communicate(soc):
+    data = recive(soc)
     while data != 'ST#'.encode():
         shot, ration = get_info(data)
-        socket.send(b'AK#')
+        send(soc, b'AK')
         worked, res = procces_info(shot,ration)
         if worked:
-            send_back = f"FN~{int(res)}#"
-            socket.send(send_back.encode())
-            socket.close()
+            send_back = f"FN~{int(res)}"
+            send(soc, send_back)
+            soc.close()
             break
         else:
-            socket.send(b"CN#")
-        data = socket.recv(1024)
+            send(soc, b"CN")
+        data = recive(soc)
 def main(ip,port):
     client_socket = socket.socket()
     client_socket.connect((ip,port))

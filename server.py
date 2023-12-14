@@ -1,7 +1,7 @@
 import socket
 from threading import Semaphore
 from multiprocessing import Process
-
+from comm import send, recive
 sem = Semaphore()
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 2828
@@ -12,13 +12,13 @@ shot = 0
 def client_process(client_soc):
     global RUNNIG, shot
     while RUNNIG: 
-        client_soc.send(f"SR~{shot}~{RATION}#".encode())
-        ack = client_soc.recv(1024).decode()
+        send(client_soc, f"SR~{shot}~{RATION}".encode())
+        ack = recive(client_soc).decode()
         if ack == 'AK#':
             client_soc.settimeout(5)
             while True:
                 try: 
-                    res = client_soc.recv(1024).decode()
+                    res = recive(client_soc).decode()
                     res = res[:-1].split('~')
                     if res[0] == 'FN':
                         print(f'found {res[1]}')
