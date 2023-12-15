@@ -9,7 +9,7 @@ def get_info(info):
 
 def procces_info(shot, ration):
     print(f'trying {shot} <-> {shot+ration}')
-    for i in range(ration):
+    for i in range(ration+1):
         to_hash = str(int(shot)+i).encode()
         res = md5(to_hash).hexdigest().upper()
         if res == TO_FIND:
@@ -20,7 +20,7 @@ def communicate(soc):
     global TO_FIND
     data = recive(soc)
     send(soc, b'AK')
-    while data != 'ST#'.encode():
+    while data != 'ST'.encode():
         shot, ration, TO_FIND = get_info(data)
         worked, res = procces_info(shot,ration)
         if worked:
@@ -35,8 +35,6 @@ def main(ip,port):
     client_socket = socket.socket()
     client_socket.connect((ip,port))
     communicate(client_socket)
-
-
 
 
 if __name__ == "__main__":
