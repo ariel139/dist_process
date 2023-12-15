@@ -3,6 +3,7 @@ from threading import Semaphore
 from multiprocessing import Process
 from comm import send, recive
 sem = Semaphore()
+TO_FIND = 'EC9C0F7EDCC18A98B1F31853B1813301'
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 2828
 RUNNIG = True
@@ -12,7 +13,7 @@ shot = 0
 def client_process(client_soc):
     global RUNNIG, shot
     while RUNNIG: 
-        send(client_soc, f"SR~{shot}~{RATION}".encode())
+        send(client_soc, f"SR~{shot}~{RATION}~{TO_FIND}".encode())
         ack = recive(client_soc).decode()
         if ack == 'AK#':
             client_soc.settimeout(5)
