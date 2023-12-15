@@ -4,7 +4,7 @@ from multiprocessing import Process
 from comm import send, recive
 sem = Semaphore()
 TO_FIND = 'EC9C0F7EDCC18A98B1F31853B1813301'
-TO_FIND = '14ee22eaba297944c96afdbe5b16c65b'.upper()
+TO_FIND = '8155bc545f84d9652f1012ef2bdfb6eb'.upper()
 SERVER_IP = '10.100.102.19'
 SERVER_PORT = 2828
 RUNNIG = True

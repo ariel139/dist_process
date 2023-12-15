@@ -14,8 +14,8 @@ def send(soc: socket.socket, data):
 def recive(soc: socket.socket):
     data = soc.recv(RECV_SIZE)
     # disconnected
-    if data == "":
-        return ""
+    if data == b'':
+        return b''
     while data[-1] != 35:
         data += soc.recv(RECV_SIZE)
 
