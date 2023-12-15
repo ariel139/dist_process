@@ -4,23 +4,25 @@ from multiprocessing import Process
 from comm import send, recive
 sem = Semaphore()
 TO_FIND = 'EC9C0F7EDCC18A98B1F31853B1813301'
-SERVER_IP = '127.0.0.1'
+TO_FIND = '14ee22eaba297944c96afdbe5b16c65b'.upper()
+SERVER_IP = '10.100.102.19'
 SERVER_PORT = 2828
 RUNNIG = True
-RATION = pow(10,8)
+RATION = 100000
 shot = 0
 
 def client_process(client_soc):
     global RUNNIG, shot
     while RUNNIG: 
         send(client_soc, f"SR~{shot}~{RATION}~{TO_FIND}".encode())
+        shot+=RATION
         ack = recive(client_soc).decode()
-        if ack == 'AK#':
+        if ack == 'AK':
             client_soc.settimeout(5)
             while True:
                 try: 
                     res = recive(client_soc).decode()
-                    res = res[:-1].split('~')
+                    res = res.split('~')
                     if res[0] == 'FN':
                         print(f'found {res[1]}')
                         RUNNIG = False
