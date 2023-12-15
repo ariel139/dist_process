@@ -11,32 +11,38 @@ RUNNIG = True
 RATION = 100000
 shot = 0
 
+def add_to_shot():
+    global shot
+    sem.acquire()
+    shot+=RATION
+    sem.release()
+
 def client_process(client_soc):
     global RUNNIG, shot
     while RUNNIG: 
         send(client_soc, f"SR~{shot}~{RATION}~{TO_FIND}".encode())
-        shot+=RATION
-        ack = recive(client_soc).decode()
-        if ack == 'AK':
-            client_soc.settimeout(5)
+        add_to_shot()
+        client_soc.settimeout(5)
+        res = recive(client_soc).decode()
+        print(res)
+        if res == "":
+            print('client dissconnected')
+            return
+        res = res.split('~')
+        if res[0] == 'AK':
             while True:
-                try: 
+                try:
                     res = recive(client_soc).decode()
-                    res = res.split('~')
-                    if res[0] == 'FN':
-                        print(f'found {res[1]}')
-                        RUNNIG = False
-                        break
-                    if res == "":
-                        raise Exception("Client error")
-                    else:
-                        sem.acquire()
-                        shot += RATION
-                        sem.release()
-                        break
+                    break
                 except socket.error:
                     continue
+        if res[0] == 'CN':
+            add_to_shot()
+        if res[0] == 'FN':
+            print(f'found {res[1]}')
+            RUNNIG = False
 
+     
 
     
 
