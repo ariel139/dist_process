@@ -1,8 +1,8 @@
 import socket
-from threading import Semaphore
+from Semaphore import Semaphore
 from multiprocessing import Process
 from comm import send, recive
-sem = Semaphore()
+sem = Semaphore("shot semaphore", 1, 1)
 TO_FIND = 'EC9C0F7EDCC18A98B1F31853B1813301'
 TO_FIND = '8155bc545f84d9652f1012ef2bdfb6eb'.upper()
 SERVER_IP = '10.100.102.19'
@@ -14,7 +14,7 @@ shot = 0
 def add_to_shot():
     global shot
     sem.acquire()
-    shot+=RATION
+    shot += RATION
     sem.release()
 
 def client_process(client_soc):
