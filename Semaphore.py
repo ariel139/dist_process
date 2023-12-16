@@ -1,12 +1,13 @@
 import win32event
-import win32security
+from  win32security import PyCredHandleType
+from win32api import CloseHandle
 import win32
 
 
 class Semaphore:
     def __init__(self, semaphore_name: str, initial_value: int, maximum_value: int, semaphore_attributes=None ):
         if semaphore_attributes is not None:
-            if not isinstance(semaphore_attributes, win32security.PyCredHandleType):
+            if not isinstance(semaphore_attributes, PyCredHandleType):
                 raise Exception('Unsupported type of security attributes')
         self.semaphore_handle = win32event.CreateSemaphore(semaphore_attributes, initial_value,maximum_value, semaphore_name)
 
@@ -28,7 +29,10 @@ class Semaphore:
         if release_amount != 1:
             print('WARNING: a none 1 release amount can cause problems')
 
-        win32event.CreateSemaphore(semaphore_handle, release_amount)
+        win32event.ReleaseSemaphore(semaphore_handle, release_amount)
+    
+    def delete(self,):
+        CloseHandle(self.semaphore_handle)
 
 
 

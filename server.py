@@ -1,10 +1,14 @@
+print(f'try {__name__}')
 import socket
 from Semaphore import Semaphore
 from multiprocessing import Process
 from comm import send, recive
-sem = Semaphore("shot semaphore", 1, 1)
+from atexit import register
+
+sem = Semaphore("shot semaphore", 0, 1)
+sem.release()
 TO_FIND = 'EC9C0F7EDCC18A98B1F31853B1813301'
-TO_FIND = '8155bc545f84d9652f1012ef2bdfb6eb'.upper()
+# TO_FIND = '8155bc545f84d9652f1012ef2bdfb6eb'.upper()
 SERVER_IP = '10.100.102.19'
 SERVER_PORT = 2828
 RUNNIG = True
@@ -42,12 +46,9 @@ def client_process(client_soc):
             print(f'found {res[1]}')
             RUNNIG = False
 
-     
-
-    
-
 
 def main():
+    register(sem.delete)
     server_socket = socket.socket()
     server_socket.bind((SERVER_IP,SERVER_PORT))
     print('server running...')
