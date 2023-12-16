@@ -19,10 +19,12 @@ def procces_info(shot, ration):
 def communicate(soc):
     global TO_FIND
     data = recive(soc)
-    send(soc, b'AK')
     while data != 'ST'.encode():
-        shot, ration, TO_FIND = get_info(data)
-        worked, res = procces_info(shot,ration)
+        data_fildes = data.deoce().split('~')
+        if data_fildes[0] == 'SR':
+            send(soc, b'AK')
+            shot, ration, TO_FIND = get_info(data)
+            worked, res = procces_info(shot,ration)
         if worked:
             send_back = f"FN~{int(res)}"
             send(soc, send_back)
