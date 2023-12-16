@@ -20,7 +20,7 @@ def communicate(soc):
     global TO_FIND
     data = recive(soc)
     while data != 'ST'.encode():
-        data_fildes = data.deoce().split('~')
+        data_fildes = data.decode().split('~')
         if data_fildes[0] == 'SR':
             send(soc, b'AK')
             shot, ration, TO_FIND = get_info(data)
