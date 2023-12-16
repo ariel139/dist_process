@@ -14,15 +14,15 @@ TO_FIND = 'EC9C0F7EDCC18A98B1F31853B1813301'
 SERVER_IP = '10.100.102.19'
 SERVER_PORT = 2828
 RUNNIG = True
-RATION = 100000000
+RATION = 10000000
 shot = 0
 
 def client_process(client_soc):
     global RUNNIG, shot
+    send(client_soc, f"SR~{shot}~{RATION}~{TO_FIND}".encode())
+    add_to_shot()
+    client_soc.settimeout(5)
     while RUNNIG: 
-        send(client_soc, f"SR~{shot}~{RATION}~{TO_FIND}".encode())
-        add_to_shot()
-        client_soc.settimeout(5)
         res = recive(client_soc).decode()
         print(res)
         if res == "":
@@ -32,13 +32,14 @@ def client_process(client_soc):
         if res[0] == 'AK':
             while True:
                 try:
-                    res = recive(client_soc).decode()
+                    res = recive(client_soc).decode().split('~')
                     break
-                except socket.error:
+                except socket.timeout:
                     continue
         if res[0] == 'CN':
+            send(client_soc, f"SR~{shot}~{RATION}~{TO_FIND}".encode())
             add_to_shot()
-        if res[0] == 'FN':
+        elif res[0] == 'FN':
             print(f'found {res[1]}')
             RUNNIG = False
 
